@@ -17,23 +17,12 @@ public class Game {
         croupierNextMove();
         int croupierPoints = countPoints(croupierCards);
         int playerPoints = countPoints(playerCards);
-        if (playerPoints > 21) {
-            if (croupierPoints > 21) {
-                System.out.println("You lost!");
-            }
-            System.out.println("You lost!");
-        }
-        if (croupierPoints > 21) {
-            System.out.println("You won!");
-        }
-
-        if (playerPoints == croupierPoints) {
+        if (playerPoints <= 21 && playerPoints > croupierPoints) {
+            System.out.println("You won");
+        } else if (playerPoints == croupierPoints && playerPoints == 21) {
             System.out.println("Draw!");
-        }
-        if (croupierPoints <= 21 && croupierPoints > playerPoints) {
+        } else {
             System.out.println("You lost!");
-        } else if (playerPoints <= 21 && playerPoints > croupierPoints) {
-            System.out.println("You won!");
         }
     }
 
@@ -41,7 +30,7 @@ public class Game {
         int croupierPoints = countPoints(croupierCards);
         while (croupierPoints <= 16) {
             croupierCards.add(getCard());
-            croupierPoints += croupierCards.get(croupierCards.size() - 1).getPoints();
+           croupierPoints = countPoints(croupierCards);
         }
         System.out.println("Croupier cards: " + croupierCards);
     }
@@ -49,12 +38,11 @@ public class Game {
     private void playerNextMove() {
         showCards();
         boolean nextMove = true;
-        int playerPoints = countPoints(playerCards);
         while (nextMove) {
             switch (playerMove()) {
                 case "hit":
                     hit();
-                    playerPoints += playerCards.get(playerCards.size() - 1).getPoints();
+                    int playerPoints = countPoints(playerCards);
                     if (playerPoints > 21) {
                         nextMove = false;
                     }
@@ -79,7 +67,16 @@ public class Game {
     }
 
     private int countPoints(List<Card> cards) {
-        return cards.stream().map(Card::getPoints).mapToInt(x -> x).sum();
+        boolean hasAce = cards.stream().map(Card::getName).anyMatch(x -> x.equals("Ace"));
+        int pointsSum = cards.stream().map(Card::getPoints).mapToInt(x -> x).sum();
+        if (pointsSum > 21 && hasAce) {
+                for (int i = 0; i < cards.size();i++) {
+                    if (cards.get(i).getName().equals("Ace"))
+                    cards.get(i).setPoints(1);
+                }
+                return cards.stream().map(Card::getPoints).mapToInt(x -> x).sum();
+        }
+        return pointsSum;
     }
 
     private void showCards() {
