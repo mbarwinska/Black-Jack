@@ -3,14 +3,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Game {
+class Game {
     private List<Card> playerCards = new ArrayList<>();
     private List<Card> croupierCards = new ArrayList<>();
-
-    public static void main(String[] args) {
-        Game game = new Game();
-        game.playGame();
-    }
 
     public void playGame() {
         playerNextMove();
@@ -30,7 +25,7 @@ public class Game {
         int croupierPoints = countPoints(croupierCards);
         while (croupierPoints <= 16) {
             croupierCards.add(getCard());
-           croupierPoints = countPoints(croupierCards);
+            croupierPoints = countPoints(croupierCards);
         }
         System.out.println("Croupier cards: " + croupierCards);
     }
@@ -70,11 +65,11 @@ public class Game {
         boolean hasAce = cards.stream().map(Card::getName).anyMatch(x -> x.equals("Ace"));
         int pointsSum = cards.stream().map(Card::getPoints).mapToInt(x -> x).sum();
         if (pointsSum > 21 && hasAce) {
-                for (int i = 0; i < cards.size();i++) {
-                    if (cards.get(i).getName().equals("Ace"))
+            for (int i = 0; i < cards.size(); i++) {
+                if (cards.get(i).getName().equals("Ace"))
                     cards.get(i).setPoints(1);
-                }
-                return cards.stream().map(Card::getPoints).mapToInt(x -> x).sum();
+            }
+            return cards.stream().map(Card::getPoints).mapToInt(x -> x).sum();
         }
         return pointsSum;
     }
